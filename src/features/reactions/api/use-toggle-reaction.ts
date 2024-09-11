@@ -7,7 +7,7 @@ type RequestType = {
      value:string,
      messageId:Id<"messages">,
 };
-type ResponseType = Id<"messages"> | null;
+type ResponseType = Id<"reactions"> | null;
 
 type Options = {
   onSuccess?: (data:ResponseType) => void;
