@@ -141,7 +141,7 @@ const Editor = ({
 
     const handleSubmit = () => {
         try {
-            const body = quillRef.current?.getText(); // Get plain text from Quill
+            const body = quillRef.current?.getText() || ""; // Get plain text from Quill
             const addedImage = imageElementRef.current?.files?.[0] || null;
 
             // Debugging logs for validation
@@ -151,12 +151,12 @@ const Editor = ({
             if (!body.trim() && !addedImage) {
                 console.log("Cannot submit: No text or image provided.");
                 return;
-            }
-
-            onSubmit({
+              }
+          
+              onSubmit({
                 body, // Text content
                 image: addedImage, // Image if provided
-            });
+              });
 
         } catch (error) {
             console.error("Error during submission:", error);
