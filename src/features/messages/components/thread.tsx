@@ -247,7 +247,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
                                 loadMore();
                             }
                         },
-                        {threshold: 1.0}
+                          {threshold: 1.0}
                     );
                     observer.observe(el);
                     return () => observer.disconnect();
@@ -271,7 +271,10 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
           authorImage={message.user.image}
           authorName={message.user.name}
           isAuthor={message.memberId === currentMember?._id}
-          reactions={message.reactions}
+          reactions={message.reactions.map((reaction) => ({
+            ...reaction,
+            memberIds: [reaction.memberId], // Create an array from the single memberId
+          }))} // Transform reactions to include memberIds
           body={message.body}
           image={message.image}
           createdAt={message._creationTime}
