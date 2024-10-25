@@ -7,6 +7,7 @@ import { DropdownMenuContent } from '@/components/ui/dropdown-menu';
 import { Hint } from '@/components/hint';
 import { PreferencesModal } from './preferences-modal';
 import { InviteModal } from './invite-modal';
+
 interface WorkspaceHeaderProps {
     workspace: Doc<"workspaces">;
     isAdmin: boolean;

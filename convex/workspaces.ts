@@ -171,29 +171,51 @@ export const get = query({
 
 export const getInfoById = query({
     args: {
+        // Defining the arguments that the query will accept. 
+        // Here, we expect an 'id' for the workspace, which is validated to be of type 'workspaces'
         id: v.id("workspaces"),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        // Log the arguments received for the query
+        console.log("Query called with arguments:", args);
 
-        if(!userId){
+        // Get the user ID from the context, typically through authentication information
+        const userId = await getAuthUserId(ctx);
+        console.log("Authenticated User ID:", userId); // Log the user ID obtained for debugging
+
+        // If no user ID is found, the user is not authenticated, so return null
+        if (!userId) {
+            console.log("No authenticated user found. Returning null.");
             return null;
         }
 
+        // Check if the user is a member of the workspace by querying the "members" table
         const member = await ctx.db
-        .query("members")
-        .withIndex("by_workspace_id_user_id", (q)  => 
-            q.eq("workspaceId", args.id).eq("userId", userId))
-        .unique();
+            .query("members")
+            .withIndex("by_workspace_id_user_id", (q) =>
+                // Using an index to search by both workspace ID and user ID to ensure unique membership
+                q.eq("workspaceId", args.id).eq("userId", userId)
+            )
+            .unique();
+        console.log("Membership status (if found):", member); // Log the membership status (should be non-null if the user is a member)
 
+        // Retrieve the workspace information using the workspace ID
         const workspace = await ctx.db.get(args.id);
+        console.log("Workspace data retrieved:", workspace); // Log the workspace data retrieved for validation
 
-        return {
-            name: workspace?.name,
-            isMember:!!member,
-        }
+        // Construct and log the final result object
+        const result = {
+            name: workspace?.name, // Name of the workspace, if available
+            isMember: !!member,    // Boolean indicating if the user is a member of the workspace
+        };
+        console.log("Final result:", result); // Log the final result being returned
+
+        // Return the final result
+        return result;
     },
-})
+});
+
+
 // Query to get a specific workspace by its ID, but only if the authenticated user is a member
 export const getById = query({
     args: { id: v.id("workspaces") },  // Requires the workspace ID as an argument
